@@ -214,38 +214,40 @@ If you'd rather compile it yourself or my precompiled version is not working for
 
 2. First you need to calculate the 'z_offset' by opening up the web-interface console and typing: `PROBE_CALIBRATE`
 
-  - **After the probe stops, remove it** then do the [paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test) (place a piece of paper under the nozzle)
+  - **After the probe stops, remove it** then do the [paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test) (place a piece of paper under the nozzle and find where the paper barely has friction from the nozzle). 
 
   - Type: `TESTZ Z=-<value>` to *decrease* Z-height and `TESTZ Z=+<value>` to *increase* it, where `<value>` is the amount in mm by which to decrease or increase the Z-height (usually 0.05 or 0.01 if close to the bed) so that there is just a little friction between the nozzle and paper.
+      - Use `TESTZ Z=-` or `TESTZ Z=+` to bisect the heights that are displayed. Use `TESTZ Z=--` or `TESTZ Z=++` to 'jump' back to a previous height.
 
-  - when you are satisfied with the Z-height, type `ACCEPT` and then `SAVE_CONFIG`
+  - When you are satisfied with the Z-height, type `ACCEPT` and then `SAVE_CONFIG`.
 
-  - edit your printer.cfg, any existing 'z_offset' will have been commented out in the `[probe]` section, and a line with the correct value will have been inserted at the bottom of the file
+  - Edit your printer.cfg, any existing 'z_offset' will have been commented out in the `[probe]` section, and a line with the correct value will have been inserted at the bottom of the file.
 
-  - add the correct 'z_offset' value into your `[probe]` section
+  - Change the correct 'z_offset' value into your `[probe]` section.
 
-  - make sure that `horizontal_move_z` in the `[delta_calibrate]` section, is set to a value **5-10mm higher than the z_offset** we just calculated
+  - Make sure that `horizontal_move_z` in the `[delta_calibrate]` section, is set to a value **5-10mm higher than the z_offset** we just calculated, so that the nozzle won't drag on the bed during the delta calibration.
 
-  - save the file and restart
+  - Save the file and restart.
 
-  - home the printer and **re-attach the probe**
+  - Home the printer and **re-attach the probe**.
 
 
 3. Then type `DELTA_CALIBRATE`. Once this is done type: `SAVE_CONFIG` to save the settings.
 
-  - This will get a decent calibration for your printer, good enough to print well. However if you really want to optimize the calibration
-  for your specific printer, run the [Enhanced Delta Calibration](https://www.klipper3d.org/Delta_Calibrate.html) which requires you to print an
+  - This will get a decent calibration for your printer, good enough to print well. However, if you really want to optimize the calibration
+  for your specific printer run the [Enhanced Delta Calibration](https://www.klipper3d.org/Delta_Calibrate.html), which requires you to print an
   object, measure it with digital calipers, and input the values in the console.
 
 
 4. Bed mesh leveling is enabled in all the config files, so after setting the Z-offset, type `BED_MESH_CALIBRATE` in the console then `SAVE_CONFIG`
    when finished.
 
-   - If using an offset probe (like a BL Touch) you might get an error 'move out of range' because the probe offset causes the print head to move outside the range of the print bed. If this happens, try decreasing the 'mesh_radius' or offsetting the 'mesh_origin' in the config file.
+   - If using an offset probe (like a BL Touch) you might get an error `Move out of range` because the probe offset causes the print head to move outside the range of the print bed. If this happens, try decreasing the 'mesh_radius' or offsetting the 'mesh_origin' in the config file.
 
-5. Remove the probe
+5. Remove the probe.
 
 6. Copy `START_PRINT` and paste it in the **start g-code** of your slicer.
+
 7. Copy `END_PRINT` and paste it in the **end g-code** of your slicer.
 
   - Both these macros can be found in the config file, so paste any start and end g-code originally found in the slicer underneath the `gcode:` line in both `[gcode_macro START_PRINT]` and `[gcode_macro END_PRINT]`, **so the only thing that should be in your slicer is `START_PRINT` and `END_PRINT`.** This way, if you need to add or delete any gcode commands, they can all be done in the config file without having to reslice the model.
@@ -276,7 +278,7 @@ Here is the Klipper [documentation](https://www.klipper3d.org/Overview.html) whe
 
 1. Why does my bed mesh look really weird?
 
-    * Either your printer is not calibrated properly or your probe is not accurate enough
+    * Either your printer is not calibrated properly or your probe is not accurate enough.
 
     * Try running `PROBE_ACCURACY` with your Z-probe attached and if you get a range value **greater than** 0.025 mm, your probe is not accurate enough to use mesh leveling and you have to delete your mesh profile in the web interface.
 
@@ -292,15 +294,15 @@ Here is the Klipper [documentation](https://www.klipper3d.org/Overview.html) whe
 
 3. Why is my probe not working?
 
-    * This was my mistake! I forgot to invert the logic of the probe pin. I've updtaed the configuration files fix this issue. To fix:
+    * This was my mistake! I forgot to invert the logic of the probe pin. I've updated the configuration files fix this issue. To fix:
 
         * Navigate to the `[probe]` section of the config file and change `pin: PA11` to `pin: !PA11`.
 
 
 4. Why is my printer timing out when I home it?
 
-      * It's probably caused by the `[idle_timeout]` and `timeout: 360` lines in the config. Try commenting them out. I've made this change in the config files as well  
-      * Try switching the USB port the printer is connected to on the Pi
+      * It's probably caused by the `[idle_timeout]` and `timeout: 360` lines in the config. Try commenting them out. I've made this change in the config files as well.  
+      * Try switching the USB port the printer is connected to on the Pi.
 
 
 5. Why is my printer going backwards when I home it?
@@ -314,3 +316,7 @@ Here is the Klipper [documentation](https://www.klipper3d.org/Overview.html) whe
       ```
 
       * Do this for all 3 steppers.
+
+6. Why won't PrusaSlicer accept the `START_PRINT` macro? Or, Why does PrusaSlicer add preheating to my sliced file?
+      * PrusaSlicer has to output the temperatures in some form for it to think it made valid G-Code. You need to feed the temperatures into your start print macro, or just have them called in PrusaSlicer to satisfy it.
+7. 
